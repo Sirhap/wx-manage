@@ -4,13 +4,13 @@ import router from '@/router'
 import qs from 'qs'
 import merge from 'lodash/merge'
 import { clearLoginInfo } from '@/utils'
-const baseUrl = '/wx'
+const baseUrl = 'https://springboot-uh3x-153632-5-1353816286.sh.run.tcloudbase.com/wx'
 
 const http = axios.create({
   timeout: 1000 * 30,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
-    'Content-Type': 'application/json; charset=utf-8'
+    'Content-Type': 'application/x-www-form-urlencoded'
   }
 })
 
@@ -66,7 +66,7 @@ http.adornParams = (params = {}, openDefultParams = true) => {
  *  json: 'application/json; charset=utf-8'
  *  form: 'application/x-www-form-urlencoded; charset=utf-8'
  */
-http.adornData = (data = {}, openDefultdata = true, contentType = 'json') => {
+http.adornData = (data = {}, openDefultdata = true, contentType = 'form') => {
   var defaults = {
     't': new Date().getTime()
   }

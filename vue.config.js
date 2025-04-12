@@ -2,17 +2,27 @@ module.exports = {
 	publicPath: "./",
     devServer: {
 		// 后端请求转发，此配置仅开发环境有效，生产环境请参考生产环境部署文档配置nginx转发
+		port: 8001,
+		allowedHosts: "all",
+		client: {
+			webSocketURL: 'auto://0.0.0.0:0/ws'
+		},
 		proxy: {
 			'/wx': {
-				target: 'http://localhost:8088/'
+				target: 'https://springboot-uh3x-153632-5-1353816286.sh.run.tcloudbase.com',
+				changeOrigin: true,
+				secure: false
 			}
 		},
-		port:8001
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+			'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, token'
+		}
 	},
 	configureWebpack:{
 		devServer: {
-			historyApiFallback: true,
-			allowedHosts:"all",
+			historyApiFallback: true
 		}
 	},
 	chainWebpack: config => {
