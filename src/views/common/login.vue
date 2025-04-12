@@ -22,7 +22,7 @@
                                     </el-input>
                                 </el-col>
                                 <el-col :span="10" class="login-captcha">
-                                    <img :src="captchaPath" @click="getCaptcha()" alt="">
+                                    <img :src="captchaPath" @click="getCaptcha()" @error="handleCaptchaError" alt="验证码">
                                 </el-col>
                             </el-row>
                         </el-form-item>
@@ -58,13 +58,21 @@ export default {
                     { required: true, message: '验证码不能为空', trigger: 'blur' }
                 ]
             },
-            captchaPath: ''
+            captchaPath: '',
+            captchaError: false
         }
     },
     created() {
         this.getCaptcha()
     },
     methods: {
+        // 处理验证码图片加载错误
+        handleCaptchaError() {
+            if (!this.captchaError) {
+                this.captchaError = true
+                this.$message.error('验证码加载失败，请点击图片重试')
+            }
+        },
         // 提交表单
         dataFormSubmit() {
             this.$refs['dataForm'].validate((valid) => {
@@ -92,8 +100,28 @@ export default {
         },
         // 获取验证码
         getCaptcha() {
+            this.captchaError = false
             this.dataForm.uuid = getUUID()
-            this.captchaPath = this.$http.adornUrl(`/captcha?uuid=${this.dataForm.uuid}`)
+            // 先检查验证码接口是否可用
+            this.$http({
+                url: this.$http.adornUrl('/captcha'),
+                method: 'get',
+                params: this.$http.adornParams({
+                    'uuid': this.dataForm.uuid
+                }),
+                responseType: 'blob'  // 指定响应类型为blob
+            }).then(({data}) => {
+                if (data instanceof Blob) {
+                    // 如果返回的是图片数据
+                    this.captchaPath = URL.createObjectURL(data)
+                } else {
+                    // 如果返回的是JSON数据
+                    this.captchaPath = this.$http.adornUrl(`/captcha?uuid=${this.dataForm.uuid}&t=${new Date().getTime()}`)
+                }
+            }).catch(() => {
+                // 如果接口调用失败，使用传统方式
+                this.captchaPath = this.$http.adornUrl(`/captcha?uuid=${this.dataForm.uuid}&t=${new Date().getTime()}`)
+            })
         }
     }
 }
