@@ -27,6 +27,9 @@ RUN npm install
 # 将当前目录（dockerfile所在目录）下所有文件都拷贝到工作目录下（.dockerignore中文件除外）
 COPY . /app
 
+# 设置环境变量，如果没有指定则使用默认值
+ENV VUE_APP_API_HOST=${API_HOST:-https://springboot-uh3x-153632-5-1353816286.sh.run.tcloudbase.com}
+
 # 构建项目
 RUN npm run build
 
