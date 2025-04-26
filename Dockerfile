@@ -27,9 +27,6 @@ RUN npm install
 # 将当前目录（dockerfile所在目录）下所有文件都拷贝到工作目录下（.dockerignore中文件除外）
 COPY . /app
 
-# 设置环境变量，如果没有指定则使用默认值
-ENV VUE_APP_API_HOST=${API_HOST:-https://springboot-uh3x-153632-5-1353816286.sh.run.tcloudbase.com}
-
 # 构建项目
 RUN npm run build
 
@@ -43,4 +40,4 @@ EXPOSE 80
 # 执行启动命令
 # 写多行独立的CMD命令是错误写法！只有最后一行CMD命令会被执行，之前的都会被忽略，导致业务报错。
 # 请参考[Docker官方文档之CMD命令](https://docs.docker.com/engine/reference/builder/#cmd)
-CMD ["serve", "-s", "dist", "-l", "80"] 
+CMD ["serve", "-s", "dist", "-l", "80"]
